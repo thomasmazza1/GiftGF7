@@ -1,0 +1,371 @@
+/* styles.css */
+:root {
+    --pastel-pink: #fce4ec;
+    --soft-pink: #f8bbd0;
+    --deep-pink: #f06292;
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --text-color: #5d4037;
+    --white: #ffffff;
+    --shadow: 0 8px 32px 0 rgba(240, 98, 146, 0.15);
+    --backgroundcolor: #ffa0cd
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #fffafb;
+    color: var(--text-color);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Background Blobs */
+.background-blobs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(80px);
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.blob-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--pastel-pink);
+    top: -100px;
+    right: -100px;
+}
+
+.blob-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--soft-pink);
+    bottom: 50px;
+    left: -50px;
+}
+
+/* Typography */
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    color: var(--deep-pink);
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5rem;
+    color: var(--deep-pink);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh; /* Ocupa todo el alto de la pantalla */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    
+    /* Configuración de la imagen de fondo */
+    background-image: linear-gradient(
+        to bottom,
+        rgba(240, 98, 146, 0.4), /* Capa de tinte rosado suave */
+        rgba(255, 250, 251, 1)    /* Degradado hacia el color de fondo del sitio */
+      ), url('images/Conociendonos.jpeg'); /* Cambia esto por el link de tu foto */
+    
+    background-size: cover;      /* La imagen cubre todo el espacio */
+    background-position: center; /* Centra la imagen */
+    background-attachment: fixed; /* Efecto sutil de movimiento al hacer scroll */
+    border-radius: 0 0 50px 50px; /* Bordes redondeados en la parte inferior */
+}
+
+.hero-content {
+    z-index: 1;
+}
+
+.hero h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para que resalte sobre la foto */
+}
+
+.hero p {
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-content {
+    animation: fadeIn 2s ease-in;
+}
+
+/* Separator */
+.separator {
+    border: none;
+    height: 2px;
+    background: var(--soft-pink);
+    width: 75%;
+    margin: 4rem auto;
+    border-radius: 2px;
+}
+
+/* Glassmorphism */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+}
+
+/* Sections */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Tickets */
+.tickets-wrapper {
+    position: relative;
+    padding-top: 40px;
+}
+
+.tickets-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ticket-column {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.vertical-divider {
+    width: 1px;
+    background: var(--soft-pink);
+    opacity: 0.5;
+}
+
+.ticket-item {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 10px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ticket-item.used {
+    opacity: 0.5;
+    text-decoration: line-through;
+    transform: scale(0.98);
+}
+
+.ticket-item input {
+    margin-right: 15px;
+    accent-color: var(--deep-pink);
+}
+
+/* Movies */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.movie-card {
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin: 1rem 0;
+}
+
+.stars {
+    color: #ffd700;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.star-empty {
+    color: #ccc;
+}
+
+.comment-toggles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.comment-display {
+    margin-top: 15px;
+    font-style: italic;
+    font-size: 0.9rem;
+    min-height: 40px;
+    transition: opacity 0.3s ease;
+}
+
+/* Buttons */
+.btn-main {
+    background: var(--deep-pink);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+}
+
+.btn-main:hover {
+    background: #e91e63;
+    transform: scale(1.05);
+}
+
+.btn-small {
+    background: var(--white);
+    color: var(--deep-pink);
+    border: 1px solid var(--soft-pink);
+    padding: 5px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.toggle-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid var(--soft-pink);
+    background: white;
+    color: var(--deep-pink);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.toggle-btn.active {
+    background: var(--deep-pink);
+    color: white;
+}
+
+/* Plans */
+.plans-card {
+    text-align: center;
+}
+
+.keep-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--deep-pink);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.keep-link:hover {
+    letter-spacing: 1px;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(252, 228, 236, 0.8);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 450px;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid var(--soft-pink);
+    background: rgba(255,255,255,0.8);
+}
+
+/* Footer */
+footer {
+    padding: 4rem 0 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.footer-links {
+    margin-top: 1rem;
+}
+
+.footer-links a {
+    color: var(--text-color);
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    .tickets-container { flex-direction: column; }
+    .vertical-divider { height: 1px; width: 100%; margin: 2rem 0; }
+    .hero { height: 70vh; }
+}
+
+.comment-btn {
+    margin-top: 15px;
+}
