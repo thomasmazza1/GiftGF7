@@ -10,25 +10,30 @@ import {
     updateDoc,
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-// ---------------- FIREBASE ----------------
+// =========================
+// FIREBASE
+// =========================
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCDC2WvcbLuiAO01bf8-F3xPejHpwVkpHU",
-    authDomain: "regalo7mesesazu-8419d.firebaseapp.com",
-    projectId: "regalo7mesesazu-8419d",
-    storageBucket: "regalo7mesesazu-8419d.firebasestorage.app",
-    messagingSenderId: "362552317130",
-    appId: "1:362552317130:web:6b8bf2c75d32d9aab31033"
+  apiKey: "AIzaSyCDC2WvcbLuiAO01bf8-F3xPejHpwVkpHU",
+  authDomain: "regalo7mesesazu-8419d.firebaseapp.com",
+  projectId: "regalo7mesesazu-8419d",
+  storageBucket: "regalo7mesesazu-8419d.firebasestorage.app",
+  messagingSenderId: "362552317130",
+  appId: "1:362552317130:web:6b8bf2c75d32d9aab31033"
 };
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-// ---------------- DEFAULT TICKETS ----------------
+// =========================
+// DEFAULT TICKETS
+// =========================
 
 const defaultTickets = {
     azu: [
@@ -44,44 +49,122 @@ const defaultTickets = {
     ]
 };
 
-// ---------------- GLOBAL STATE ----------------
+// =========================
+// STATE
+// =========================
 
 let tickets = defaultTickets;
 
 let movies = [];
 
-// ---------------- CREATE INITIAL TICKETS ----------------
+let plans = [];
+
+let currentMovieIndex = null;
+
+let editingMovieIndex = null;
+
+let currentPlanReviewIndex = null;
+
+// =========================
+// INITIALIZE TICKETS
+// =========================
 
 async function initializeTickets() {
 
-    const ticketRef = doc(db, "appData", "tickets");
+    const ticketRef =
+        doc(db, "appData", "tickets");
 
-    const ticketSnap = await getDoc(ticketRef);
+    const ticketSnap =
+        await getDoc(ticketRef);
 
     if (!ticketSnap.exists()) {
 
-        await setDoc(ticketRef, defaultTickets);
+        await setDoc(
+            ticketRef,
+            defaultTickets
+        );
     }
 }
 
 initializeTickets();
 
-// ---------------- TICKETS REALTIME ----------------
+// =========================
+// REALTIME TICKETS
+// =========================
 
 onSnapshot(
     doc(db, "appData", "tickets"),
-    (snapshot) => {
+    async (snapshot) => {
 
-        if (snapshot.exists()) {
+        if (!snapshot.exists()) {
 
-            tickets = snapshot.data();
+            await setDoc(
+                doc(db, "appData", "tickets"),
+                defaultTickets
+            );
 
-            renderTickets();
+            return;
         }
+
+        const data = snapshot.data();
+
+        tickets = {
+            azu: Array.isArray(data.azu)
+                ? data.azu
+                : defaultTickets.azu,
+
+            lio: Array.isArray(data.lio)
+                ? data.lio
+                : defaultTickets.lio
+        };
+
+        // Repara automáticamente Firebase
+        await updateDoc(
+            doc(db, "appData", "tickets"),
+            tickets
+        );
+
+        renderTickets();
     }
 );
 
-// ---------------- RENDER TICKETS ----------------
+// =========================
+// REALTIME MOVIES
+// =========================
+
+onSnapshot(
+    collection(db, "movies"),
+    (snapshot) => {
+
+        movies = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        renderMovies();
+    }
+);
+
+// =========================
+// REALTIME PLANS
+// =========================
+
+onSnapshot(
+    collection(db, "plans"),
+    (snapshot) => {
+
+        plans = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        renderPlans();
+    }
+);
+
+// =========================
+// RENDER TICKETS
+// =========================
 
 function renderTickets() {
 
@@ -97,7 +180,8 @@ function renderTickets() {
 
     const createItem = (ticket, owner) => {
 
-        const div = document.createElement('div');
+        const div =
+            document.createElement('div');
 
         div.className =
             `ticket-item ${ticket.used ? 'used' : ''}`;
@@ -128,7 +212,9 @@ function renderTickets() {
     });
 }
 
-// ---------------- TOGGLE TICKET ----------------
+// =========================
+// TOGGLE TICKET
+// =========================
 
 async function toggleTicket(owner, id) {
 
@@ -153,22 +239,28 @@ async function toggleTicket(owner, id) {
     );
 }
 
-// ---------------- EDIT TICKETS MODAL ----------------
+// =========================
+// EDIT TICKETS MODAL
+// =========================
 
 const ticketModal =
     document.getElementById('ticket-modal');
 
-document.getElementById('edit-tickets-btn').onclick =
-() => {
+document.getElementById(
+    'edit-tickets-btn'
+).onclick = () => {
 
     const container =
-        document.getElementById('edit-list-container');
+        document.getElementById(
+            'edit-list-container'
+        );
 
     container.innerHTML = '';
 
     ['azu', 'lio'].forEach(owner => {
 
-        const h4 = document.createElement('h4');
+        const h4 =
+            document.createElement('h4');
 
         h4.innerText =
             owner.charAt(0).toUpperCase() +
@@ -194,10 +286,13 @@ document.getElementById('edit-tickets-btn').onclick =
     ticketModal.style.display = 'flex';
 };
 
-// ---------------- SAVE TICKETS ----------------
+// =========================
+// SAVE TICKETS
+// =========================
 
-document.getElementById('save-tickets').onclick =
-async () => {
+document.getElementById(
+    'save-tickets'
+).onclick = async () => {
 
     const inputs =
         document.querySelectorAll(
@@ -206,9 +301,11 @@ async () => {
 
     inputs.forEach(input => {
 
-        const { owner, idx } = input.dataset;
+        const { owner, idx } =
+            input.dataset;
 
-        tickets[owner][idx].text = input.value;
+        tickets[owner][idx].text =
+            input.value;
     });
 
     await updateDoc(
@@ -222,37 +319,29 @@ async () => {
     ticketModal.style.display = 'none';
 };
 
-// ---------------- MOVIES REALTIME ----------------
-
-onSnapshot(
-    collection(db, "movies"),
-    (snapshot) => {
-
-        movies = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-
-        renderMovies();
-    }
-);
-
-// ---------------- RENDER MOVIES ----------------
+// =========================
+// RENDER MOVIES
+// =========================
 
 function renderMovies() {
 
     const grid =
-        document.getElementById('movies-grid');
+        document.getElementById(
+            'movies-grid'
+        );
 
     grid.innerHTML = '';
 
     movies.forEach((movie, index) => {
 
-        const card =
-            document.createElement('div');
+        const activePerson =
+            movie.activePerson || 'azu';
 
-        card.className =
-            'glass-card movie-card';
+        const review =
+            movie.reviews?.[activePerson] || {
+                rating: 0,
+                comment: ''
+            };
 
         const starHTML = Array.from(
             { length: 5 },
@@ -260,22 +349,28 @@ function renderMovies() {
 
                 const val = i + 1;
 
-                if (movie.rating >= val)
+                if (review.rating >= val)
                     return '★';
 
-                if (movie.rating >= val - 0.5)
+                if (review.rating >= val - 0.5)
                     return '⯪';
 
                 return '<span class="star-empty">★</span>';
             }
         ).join('');
 
+        const card =
+            document.createElement('div');
+
+        card.className =
+            'glass-card movie-card';
+
         card.innerHTML = `
             <h3>${movie.title}</h3>
 
-            <img 
-                src="${movie.url}" 
-                class="movie-img" 
+            <img
+                src="${movie.url}"
+                class="movie-img"
                 alt="${movie.title}"
             >
 
@@ -286,14 +381,14 @@ function renderMovies() {
             <div class="comment-toggles">
 
                 <button
-                    class="toggle-btn ${movie.activeComment === 'azu' ? 'active' : ''}"
+                    class="toggle-btn ${activePerson === 'azu' ? 'active' : ''}"
                     onclick="toggleComment(${index}, 'azu')"
                 >
                     A
                 </button>
 
                 <button
-                    class="toggle-btn ${movie.activeComment === 'lio' ? 'active' : ''}"
+                    class="toggle-btn ${activePerson === 'lio' ? 'active' : ''}"
                     onclick="toggleComment(${index}, 'lio')"
                 >
                     L
@@ -302,81 +397,120 @@ function renderMovies() {
             </div>
 
             <p class="comment-display">
-                ${movie.comments[movie.activeComment] || 'Sin comentario'}
+                ${review.comment || 'Sin comentario'}
             </p>
 
-            <button
-                class="btn-small comment-btn"
-                onclick="openCommentModal(${index})"
-            >
-                Comentar
-            </button>
+            <div class="movie-actions">
+
+                <button
+                    class="btn-main movie-action-btn"
+                    onclick="openCommentModal(${index})"
+                >
+                    Comentar
+                </button>
+
+                <button
+                    class="btn-small edit-movie-btn"
+                    onclick="editMovie(${index})"
+                >
+                    Editar
+                </button>
+
+            </div>
         `;
 
         grid.appendChild(card);
     });
 }
 
-// ---------------- TOGGLE COMMENT ----------------
+// =========================
+// TOGGLE MOVIE COMMENT
+// =========================
 
-async function toggleComment(movieIndex, author) {
+async function toggleComment(movieIndex, person) {
 
-    movies[movieIndex].activeComment = author;
+    const movie = movies[movieIndex];
 
     await updateDoc(
-        doc(db, "movies", movies[movieIndex].id),
+        doc(db, "movies", movie.id),
         {
-            activeComment: author
+            activePerson: person
         }
     );
 }
 
 window.toggleComment = toggleComment;
 
-// ---------------- MOVIE MODAL ----------------
+// =========================
+// ADD MOVIE MODAL
+// =========================
 
 const movieModal =
     document.getElementById('movie-modal');
 
-document.getElementById('add-movie-btn').onclick =
-() => {
+document.getElementById(
+    'add-movie-btn'
+).onclick = () => {
 
     movieModal.style.display = 'flex';
 };
 
-// ---------------- ADD MOVIE ----------------
+// =========================
+// ADD MOVIE
+// =========================
 
-document.getElementById('movie-form').onsubmit =
-async (e) => {
+document.getElementById(
+    'movie-form'
+).onsubmit = async (e) => {
 
     e.preventDefault();
+
+    const author =
+        document.querySelector(
+            'input[name="author"]:checked'
+        ).value;
 
     const newMovie = {
 
         title:
-            document.getElementById('m-title').value,
-
-        url:
-            document.getElementById('m-url').value,
-
-        rating:
-            parseFloat(
-                document.getElementById('m-rating').value
-            ),
-
-        activeComment:
-            document.querySelector(
-                'input[name="author"]:checked'
+            document.getElementById(
+                'm-title'
             ).value,
 
-        comments: {
-            azu: '',
-            lio: ''
+        url:
+            document.getElementById(
+                'm-url'
+            ).value,
+
+        activePerson: author,
+
+        reviews: {
+            azu: {
+                rating: 0,
+                comment: ''
+            },
+
+            lio: {
+                rating: 0,
+                comment: ''
+            }
         }
     };
 
-    newMovie.comments[newMovie.activeComment] =
-        document.getElementById('m-comment').value;
+    newMovie.reviews[author] = {
+
+        rating:
+            parseFloat(
+                document.getElementById(
+                    'm-rating'
+                ).value
+            ),
+
+        comment:
+            document.getElementById(
+                'm-comment'
+            ).value
+    };
 
     await addDoc(
         collection(db, "movies"),
@@ -388,66 +522,555 @@ async (e) => {
     e.target.reset();
 };
 
-// ---------------- COMMENT MODAL ----------------
-
-let currentMovieIndex = null;
+// =========================
+// COMMENT MODAL
+// =========================
 
 const commentModal =
-    document.getElementById('comment-modal');
+    document.getElementById(
+        'comment-modal'
+    );
 
 function openCommentModal(index) {
 
     currentMovieIndex = index;
 
-    commentModal.style.display = 'flex';
+    const movie =
+        movies[index];
+
+    const activePerson =
+        movie.activePerson || 'azu';
+
+    document.querySelector(
+        `input[name="comment-author"][value="${activePerson}"]`
+    ).checked = true;
+
+    const review =
+        movie.reviews?.[activePerson];
+
+    document.getElementById(
+        'new-comment-rating'
+    ).value = review?.rating || '';
 
     document.getElementById(
         'new-comment-text'
-    ).value = '';
+    ).value = review?.comment || '';
+
+    commentModal.style.display = 'flex';
 }
 
 window.openCommentModal = openCommentModal;
 
-// ---------------- SAVE COMMENT ----------------
+// =========================
+// SAVE COMMENT
+// =========================
 
-document.getElementById('save-comment-btn').onclick =
-async () => {
+document.getElementById(
+    'save-comment-btn'
+).onclick = async () => {
 
     const author =
         document.querySelector(
             'input[name="comment-author"]:checked'
         ).value;
 
-    const text =
-        document.getElementById(
-            'new-comment-text'
-        ).value;
+    const movie =
+        movies[currentMovieIndex];
 
-    if (!text.trim()) return;
+    movie.reviews[author] = {
 
-    movies[currentMovieIndex]
-        .comments[author] = text;
+        rating:
+            parseFloat(
+                document.getElementById(
+                    'new-comment-rating'
+                ).value
+            ),
+
+        comment:
+            document.getElementById(
+                'new-comment-text'
+            ).value
+    };
+
+    movie.activePerson = author;
 
     await updateDoc(
-        doc(
-            db,
-            "movies",
-            movies[currentMovieIndex].id
-        ),
+        doc(db, "movies", movie.id),
         {
-            comments:
-                movies[currentMovieIndex].comments
+            reviews: movie.reviews,
+            activePerson: author
         }
     );
 
     commentModal.style.display = 'none';
 };
 
-// ---------------- CLOSE MODALS ----------------
+// =========================
+// EDIT MOVIE
+// =========================
+
+const editMovieModal =
+    document.getElementById(
+        'edit-movie-modal'
+    );
+
+function editMovie(index) {
+
+    editingMovieIndex = index;
+
+    const movie =
+        movies[index];
+
+    document.getElementById(
+        'edit-movie-title'
+    ).value = movie.title;
+
+    document.getElementById(
+        'edit-movie-url'
+    ).value = movie.url;
+
+    const activePerson =
+        movie.activePerson || 'azu';
+
+    document.querySelector(
+        `input[name="edit-review-user"][value="${activePerson}"]`
+    ).checked = true;
+
+    loadEditReview(activePerson);
+
+    editMovieModal.style.display = 'flex';
+}
+
+window.editMovie = editMovie;
+
+// =========================
+// LOAD EDIT REVIEW
+// =========================
+
+function loadEditReview(person) {
+
+    const movie =
+        movies[editingMovieIndex];
+
+    const review =
+        movie.reviews?.[person] || {
+            rating: 0,
+            comment: ''
+        };
+
+    document.getElementById(
+        'edit-movie-rating'
+    ).value = review.rating || '';
+
+    document.getElementById(
+        'edit-movie-comment'
+    ).value = review.comment || '';
+}
+
+document
+.querySelectorAll(
+    'input[name="edit-review-user"]'
+)
+.forEach(radio => {
+
+    radio.addEventListener(
+        'change',
+        (e) => {
+
+            loadEditReview(e.target.value);
+        }
+    );
+});
+
+// =========================
+// SAVE EDIT MOVIE
+// =========================
+
+document.getElementById(
+    'save-edit-movie-btn'
+).onclick = async () => {
+
+    const movie =
+        movies[editingMovieIndex];
+
+    const selectedUser =
+        document.querySelector(
+            'input[name="edit-review-user"]:checked'
+        ).value;
+
+    movie.title =
+        document.getElementById(
+            'edit-movie-title'
+        ).value;
+
+    movie.url =
+        document.getElementById(
+            'edit-movie-url'
+        ).value;
+
+    movie.reviews[selectedUser] = {
+
+        rating:
+            parseFloat(
+                document.getElementById(
+                    'edit-movie-rating'
+                ).value
+            ),
+
+        comment:
+            document.getElementById(
+                'edit-movie-comment'
+            ).value
+    };
+
+    movie.activePerson = selectedUser;
+
+    await updateDoc(
+        doc(db, "movies", movie.id),
+        {
+            title: movie.title,
+            url: movie.url,
+            reviews: movie.reviews,
+            activePerson: selectedUser
+        }
+    );
+
+    editMovieModal.style.display = 'none';
+};
+
+// =========================
+// DELETE MOVIE
+// =========================
+
+document.getElementById(
+    'delete-movie-btn'
+).onclick = async () => {
+
+    const confirmDelete =
+        confirm(
+            '¿Eliminar esta película?'
+        );
+
+    if (!confirmDelete) return;
+
+    const movie =
+        movies[editingMovieIndex];
+
+    await deleteDoc(
+        doc(db, "movies", movie.id)
+    );
+
+    editMovieModal.style.display = 'none';
+};
+
+// =========================
+// PLANS
+// =========================
+
+const planModal =
+    document.getElementById(
+        'plan-modal'
+    );
+
+document.getElementById(
+    'add-plan-btn'
+).onclick = () => {
+
+    planModal.style.display = 'flex';
+};
+
+// =========================
+// ADD PLAN
+// =========================
+
+document.getElementById(
+    'plan-form'
+).onsubmit = async (e) => {
+
+    e.preventDefault();
+
+    const newPlan = {
+
+        title:
+            document.getElementById(
+                'plan-title'
+            ).value,
+
+        description:
+            document.getElementById(
+                'plan-description'
+            ).value,
+
+        completed: false,
+
+        reviews: {
+            azu: {
+                rating: 0,
+                comment: ''
+            },
+
+            lio: {
+                rating: 0,
+                comment: ''
+            }
+        }
+    };
+
+    await addDoc(
+        collection(db, "plans"),
+        newPlan
+    );
+
+    planModal.style.display = 'none';
+
+    e.target.reset();
+};
+
+// =========================
+// RENDER PLANS
+// =========================
+
+function renderPlans() {
+
+    const pendingContainer =
+        document.getElementById(
+            'pending-plans'
+        );
+
+    const completedContainer =
+        document.getElementById(
+            'completed-plans'
+        );
+
+    pendingContainer.innerHTML = '';
+
+    completedContainer.innerHTML = '';
+
+    let pendingCount = 0;
+
+    let completedCount = 0;
+
+    plans.forEach((plan, index) => {
+
+        const card =
+            document.createElement('div');
+
+        card.className =
+            'plan-card';
+
+        if (!plan.completed) {
+
+            pendingCount++;
+
+            card.innerHTML = `
+                <h4>${plan.title}</h4>
+
+                <p>${plan.description}</p>
+
+                <button
+                    class="btn-main complete-plan-btn"
+                    onclick="completePlan(${index})"
+                >
+                    Ya lo vivimos 💖
+                </button>
+            `;
+
+            pendingContainer.appendChild(card);
+
+        } else {
+
+            completedCount++;
+
+            const activePerson =
+                plan.activePerson || 'azu';
+
+            const review =
+                plan.reviews?.[activePerson];
+
+            card.innerHTML = `
+                <h4>${plan.title}</h4>
+
+                <p>${plan.description}</p>
+
+                <div class="plan-rating">
+                    ⭐ ${review?.rating || 0}/5
+                </div>
+
+                <p class="plan-review-comment">
+                    ${review?.comment || 'Sin review'}
+                </p>
+
+                <div class="comment-toggles">
+
+                    <button
+                        class="toggle-btn ${activePerson === 'azu' ? 'active' : ''}"
+                        onclick="togglePlanReview(${index}, 'azu')"
+                    >
+                        A
+                    </button>
+
+                    <button
+                        class="toggle-btn ${activePerson === 'lio' ? 'active' : ''}"
+                        onclick="togglePlanReview(${index}, 'lio')"
+                    >
+                        L
+                    </button>
+
+                </div>
+
+                <button
+                    class="btn-main"
+                    onclick="openPlanReviewModal(${index})"
+                >
+                    Editar review
+                </button>
+            `;
+
+            completedContainer.appendChild(card);
+        }
+    });
+
+    document.getElementById(
+        'pending-count'
+    ).innerText = pendingCount;
+
+    document.getElementById(
+        'completed-count'
+    ).innerText = completedCount;
+}
+
+// =========================
+// COMPLETE PLAN
+// =========================
+
+async function completePlan(index) {
+
+    const plan =
+        plans[index];
+
+    await updateDoc(
+        doc(db, "plans", plan.id),
+        {
+            completed: true
+        }
+    );
+}
+
+window.completePlan = completePlan;
+
+// =========================
+// TOGGLE PLAN REVIEW
+// =========================
+
+async function togglePlanReview(index, person) {
+
+    const plan =
+        plans[index];
+
+    await updateDoc(
+        doc(db, "plans", plan.id),
+        {
+            activePerson: person
+        }
+    );
+}
+
+window.togglePlanReview =
+    togglePlanReview;
+
+// =========================
+// PLAN REVIEW MODAL
+// =========================
+
+const planReviewModal =
+    document.getElementById(
+        'plan-review-modal'
+    );
+
+function openPlanReviewModal(index) {
+
+    currentPlanReviewIndex = index;
+
+    const plan =
+        plans[index];
+
+    const activePerson =
+        plan.activePerson || 'azu';
+
+    document.querySelector(
+        `input[name="plan-review-user"][value="${activePerson}"]`
+    ).checked = true;
+
+    const review =
+        plan.reviews?.[activePerson];
+
+    document.getElementById(
+        'plan-review-rating'
+    ).value = review?.rating || '';
+
+    document.getElementById(
+        'plan-review-comment'
+    ).value = review?.comment || '';
+
+    planReviewModal.style.display = 'flex';
+}
+
+window.openPlanReviewModal =
+    openPlanReviewModal;
+
+// =========================
+// SAVE PLAN REVIEW
+// =========================
+
+document.getElementById(
+    'save-plan-review-btn'
+).onclick = async () => {
+
+    const person =
+        document.querySelector(
+            'input[name="plan-review-user"]:checked'
+        ).value;
+
+    const plan =
+        plans[currentPlanReviewIndex];
+
+    plan.reviews[person] = {
+
+        rating:
+            parseFloat(
+                document.getElementById(
+                    'plan-review-rating'
+                ).value
+            ),
+
+        comment:
+            document.getElementById(
+                'plan-review-comment'
+            ).value
+    };
+
+    plan.activePerson = person;
+
+    await updateDoc(
+        doc(db, "plans", plan.id),
+        {
+            reviews: plan.reviews,
+            activePerson: person
+        }
+    );
+
+    planReviewModal.style.display = 'none';
+};
+
+// =========================
+// CLOSE MODALS
+// =========================
 
 window.onclick = (e) => {
 
-    if (e.target.classList.contains('modal')) {
+    if (
+        e.target.classList.contains('modal')
+    ) {
 
         e.target.style.display = 'none';
     }
