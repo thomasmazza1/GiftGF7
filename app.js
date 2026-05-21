@@ -913,7 +913,9 @@ function renderPlans() {
 
                 <p>${plan.description}</p>
 
-                <div class="plan-stars">${planStarHTML}</div>
+                <div class="plan-rating">
+                    ⭐ ${review?.rating || 0}/5
+                </div>
 
                 <p class="plan-review-comment">
                     ${review?.comment || 'Sin review'}
