@@ -1,0 +1,595 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>7 Meses Juntos</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>❣️Felices 6-7 meses amor❣️</h1>
+            <p>❣️espero que te guste mi regalito❣️</p>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <hr class="separator">
+
+        <!-- ========================= -->
+        <!-- TICKETS -->
+        <!-- ========================= -->
+
+        <section id="tickets-section">
+
+            <div class="section-header">
+                <h2>Tickets</h2>
+                <p>tickets mensuales usados y no usados de cada uno</p>
+                <p class="p2">😠 no hagas trampa 😠</p>
+            </div>
+
+            <div class="tickets-wrapper">
+
+                <button
+                    id="edit-tickets-btn"
+                    class="btn-small"
+                >
+                    Editar
+                </button>
+
+                <div class="glass-card tickets-container">
+
+                    <div class="ticket-column">
+                        <h3>Azu</h3>
+
+                        <div
+                            id="azu-tickets"
+                            class="ticket-list"
+                        ></div>
+                    </div>
+
+                    <div class="vertical-divider"></div>
+
+                    <div class="ticket-column">
+                        <h3>Lio</h3>
+
+                        <div
+                            id="lio-tickets"
+                            class="ticket-list"
+                        ></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <hr class="separator">
+
+        <!-- ========================= -->
+        <!-- MOVIES -->
+        <!-- ========================= -->
+
+        <section id="movies-section">
+
+            <div class="section-header">
+
+                <h2>Películas</h2>
+
+                <p>
+                    Películas y las reseñas de cada uno (respetar el comentario y rating de cada uno :D)
+                </p>
+<br>
+                <button
+                    id="add-movie-btn"
+                    class="btn-main"
+                >
+                    Agregar
+                </button>
+
+            </div>
+
+            <div
+                id="movies-grid"
+                class="movies-grid"
+            ></div>
+
+        </section>
+
+        <hr class="separator">
+
+        <!-- ========================= -->
+        <!-- PLANS -->
+        <!-- ========================= -->
+
+        <section id="plans-section">
+
+            <div class="section-header">
+
+                <h2>Planes</h2>
+
+                <p>
+                    ideas random que tenemos y cosas que ya vivimos juntos ✨
+                </p>
+
+                <button
+                    id="add-plan-btn"
+                    class="btn-main"
+                >
+                    Agregar plan
+                </button>
+
+            </div>
+
+            <div class="plans-board">
+
+                <!-- PENDIENTES -->
+
+                <div class="glass-card kanban-column">
+
+                    <div class="kanban-header pending-header">
+
+                        <h3>
+                            ✨ Pendientes
+                        </h3>
+
+                        <span id="pending-count">
+                            0
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="pending-plans"
+                        class="plans-list"
+                    ></div>
+
+                </div>
+
+                <!-- YA VIVIDOS -->
+
+                <div class="glass-card kanban-column">
+
+                    <div class="kanban-header completed-header">
+
+                        <h3>
+                            💖 Ya vivimos
+                        </h3>
+
+                        <span id="completed-count">
+                            0
+                        </span>
+
+                    </div>
+
+                    <div
+                        id="completed-plans"
+                        class="plans-list"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Hecho por Thomas Lionel Mazza
+        </p>
+
+        <p>
+            20-05-2026
+        </p>
+
+        <div class="footer-links">
+
+            <a
+                href="https://github.com/thomasmazza1"
+                target="_blank"
+            >
+                GitHub
+            </a>
+
+            <a
+                href="mailto:thomaslmazza@gmail.com"
+            >
+                Email
+            </a>
+
+        </div>
+
+    </footer>
+
+    <!-- ========================= -->
+    <!-- MODAL EDIT TICKETS -->
+    <!-- ========================= -->
+
+    <div
+        id="ticket-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Editar Tickets
+            </h3>
+
+            <div id="edit-list-container"></div>
+
+            <button
+                id="save-tickets"
+                class="btn-main modal-save-btn"
+            >
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL ADD MOVIE -->
+    <!-- ========================= -->
+
+    <div
+        id="movie-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Nueva Película
+            </h3>
+
+            <form id="movie-form">
+
+                <input
+                    type="text"
+                    id="m-title"
+                    placeholder="Título de la película"
+                    required
+                >
+
+                <input
+                    type="url"
+                    id="m-url"
+                    placeholder="URL de la imagen"
+                    required
+                >
+
+                <input
+                    type="number"
+                    id="m-rating"
+                    placeholder="Rating (1-5)"
+                    step="0.5"
+                    min="1"
+                    max="5"
+                    required
+                >
+
+                <textarea
+                    id="m-comment"
+                    placeholder="Tu comentario..."
+                    required
+                ></textarea>
+
+                <div class="radio-group">
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="author"
+                            value="azu"
+                            checked
+                        >
+                        Azu
+                    </label>
+<br>
+                    <label>
+                        <input
+                            type="radio"
+                            name="author"
+                            value="lio"
+                        >
+                        Lio
+                    </label>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-main"
+                >
+                    Enviar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL COMMENT -->
+    <!-- ========================= -->
+
+    <div
+        id="comment-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Agregar comentario
+            </h3>
+
+            <div class="radio-group">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="comment-author"
+                        value="azu"
+                        checked
+                    >
+                    Azu
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="comment-author"
+                        value="lio"
+                    >
+                    Lio
+                </label>
+
+            </div>
+
+            <input
+                type="number"
+                id="new-comment-rating"
+                placeholder="Rating (1-5)"
+                step="0.5"
+                min="1"
+                max="5"
+            >
+
+            <textarea
+                id="new-comment-text"
+                placeholder="Escribí un comentario..."
+            ></textarea>
+
+            <button
+                id="save-comment-btn"
+                class="btn-main modal-save-btn"
+            >
+                Guardar comentario
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL EDIT MOVIE -->
+    <!-- ========================= -->
+
+    <div
+        id="edit-movie-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Editar película
+            </h3>
+
+            <input
+                type="text"
+                id="edit-movie-title"
+                placeholder="Título"
+            >
+
+            <input
+                type="url"
+                id="edit-movie-url"
+                placeholder="URL de imagen"
+            >
+
+            <div class="radio-group">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="edit-review-user"
+                        value="azu"
+                        checked
+                    >
+                    Azu
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="edit-review-user"
+                        value="lio"
+                    >
+                    Lio
+                </label>
+
+            </div>
+
+            <input
+                type="number"
+                id="edit-movie-rating"
+                placeholder="Rating"
+                step="0.5"
+                min="1"
+                max="5"
+            >
+
+            <textarea
+                id="edit-movie-comment"
+                placeholder="Comentario..."
+            ></textarea>
+
+            <button
+                id="save-edit-movie-btn"
+                class="btn-main modal-save-btn"
+            >
+                Guardar cambios
+            </button>
+
+            <button
+                id="delete-movie-btn"
+                class="btn-delete"
+            >
+                Eliminar película
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL ADD PLAN -->
+    <!-- ========================= -->
+
+    <div
+        id="plan-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Nuevo plan
+            </h3>
+
+            <form id="plan-form">
+
+                <input
+                    type="text"
+                    id="plan-title"
+                    placeholder="Título del plan"
+                    required
+                >
+
+                <textarea
+                    id="plan-description"
+                    placeholder="Descripción..."
+                    required
+                ></textarea>
+
+                <button
+                    type="submit"
+                    class="btn-main"
+                >
+                    Guardar plan
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ========================= -->
+    <!-- MODAL PLAN REVIEW -->
+    <!-- ========================= -->
+
+    <div
+        id="plan-review-modal"
+        class="modal"
+    >
+
+        <div class="modal-content glass-card">
+
+            <h3>
+                Review del plan
+            </h3>
+
+            <div class="radio-group">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="plan-review-user"
+                        value="azu"
+                        checked
+                    >
+                    Azu
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="plan-review-user"
+                        value="lio"
+                    >
+                    Lio
+                </label>
+
+            </div>
+
+            <input
+                type="number"
+                id="plan-review-rating"
+                placeholder="Rating"
+                step="0.5"
+                min="1"
+                max="5"
+            >
+
+            <textarea
+                id="plan-review-comment"
+                placeholder="¿Qué les pareció?"
+            ></textarea>
+
+            <button
+                id="save-plan-review-btn"
+                class="btn-main modal-save-btn"
+            >
+                Guardar review
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script type="module" src="app.js"></script>
+
+</body>
+</html>
