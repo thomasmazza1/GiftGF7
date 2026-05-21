@@ -94,11 +94,15 @@ h3 {
 ========================= */
 
 .hero {
-    height: 100vh;
+    min-height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     text-align: center;
+
+    padding: 2rem;
 
     background-image:
         linear-gradient(
@@ -109,10 +113,12 @@ h3 {
         url('images/Conociendonos.jpeg');
 
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
 
     border-radius: 0 0 50px 50px;
+
+    overflow: hidden;
 }
 
 .hero-content {
@@ -747,8 +753,22 @@ footer {
     }
 
     .hero {
-        height: 75vh;
-    }
+    min-height: 85vh;
+
+    padding: 1.5rem;
+
+    background-size: cover;
+    background-position: center center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+}
+
+.hero p {
+    font-size: 1rem;
+}
 
     .tickets-container {
         flex-direction: column;
