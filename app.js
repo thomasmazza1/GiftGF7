@@ -350,10 +350,10 @@ function renderMovies() {
                 const val = i + 1;
 
                 if (review.rating >= val)
-                    return '★';
+                    return '<span class="star-full">★</span>';
 
                 if (review.rating >= val - 0.5)
-                    return '⯪';
+                    return '<span class="star-half-char">⯪</span>';
 
                 return '<span class="star-empty">★</span>';
             }
@@ -873,6 +873,13 @@ function renderPlans() {
                 >
                     Ya lo vivimos 💖
                 </button>
+
+                <button
+                    class="btn-delete-plan"
+                    onclick="deletePlan(${index})"
+                >
+                    Eliminar plan 🗑️
+                </button>
             `;
 
             pendingContainer.appendChild(card);
@@ -886,6 +893,20 @@ function renderPlans() {
 
             const review =
                 plan.reviews?.[activePerson];
+
+            const rating = review?.rating || 0;
+
+            const planStarHTML = Array.from(
+                { length: 5 },
+                (_, i) => {
+                    const val = i + 1;
+                    if (rating >= val)
+                        return '<span class="star-full">★</span>';
+                    if (rating >= val - 0.5)
+                        return '<span class="star-half-char">⯪</span>';
+                    return '<span class="star-empty">★</span>';
+                }
+            ).join('');
 
             card.innerHTML = `
                 <h4>${plan.title}</h4>
@@ -924,6 +945,13 @@ function renderPlans() {
                 >
                     Editar review
                 </button>
+
+                <button
+                    class="btn-back-pending"
+                    onclick="uncompleatePlan(${index})"
+                >
+                    ↩ Volver a pendientes
+                </button>
             `;
 
             completedContainer.appendChild(card);
@@ -957,6 +985,44 @@ async function completePlan(index) {
 }
 
 window.completePlan = completePlan;
+
+// =========================
+// UNCOMPLETAE PLAN (volver a pendientes)
+// =========================
+
+async function uncompleatePlan(index) {
+
+    const plan = plans[index];
+
+    await updateDoc(
+        doc(db, "plans", plan.id),
+        {
+            completed: false
+        }
+    );
+}
+
+window.uncompleatePlan = uncompleatePlan;
+
+// =========================
+// DELETE PLAN
+// =========================
+
+async function deletePlan(index) {
+
+    const confirmDelete =
+        confirm('¿Eliminar este plan? Esta acción no se puede deshacer 💔');
+
+    if (!confirmDelete) return;
+
+    const plan = plans[index];
+
+    await deleteDoc(
+        doc(db, "plans", plan.id)
+    );
+}
+
+window.deletePlan = deletePlan;
 
 // =========================
 // TOGGLE PLAN REVIEW

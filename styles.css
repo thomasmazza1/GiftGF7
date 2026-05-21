@@ -271,10 +271,21 @@ h3 {
     color: gold;
     font-size: 1.3rem;
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Borde rosa en estrellas llenas y medias de películas */
+.stars .star-full,
+.stars .star-half-char {
+    -webkit-text-stroke: 1px #f06292;
+    filter: drop-shadow(0 0 2px rgba(240,98,146,0.4));
 }
 
 .star-empty {
     color: #d4d4d4;
+    -webkit-text-stroke: 1px #f4a7c0;
 }
 
 .comment-toggles {
@@ -356,12 +367,63 @@ h3 {
     font-size: 1.5rem;
 }
 
+/* Kanban header: título + contador en la misma línea, centrado */
+.kanban-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    flex-wrap: nowrap;
+}
+
+.kanban-header h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--deep-pink);
+    white-space: nowrap;
+}
+
+/* Contador tipo badge romántico */
+.kanban-header span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 10px;
+    background: var(--deep-pink);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border-radius: 999px;
+    box-shadow: 0 3px 10px rgba(240,98,146,0.35);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.plan-description {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.plan-rating {
+    margin-top: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+/* Centrar todo dentro de plan-card */
 .plan-card {
     background: rgba(255,255,255,0.45);
     border-radius: 18px;
-    padding: 1rem;
+    padding: 1.2rem 1rem;
     margin-bottom: 1rem;
     transition: 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .plan-card:hover {
@@ -371,15 +433,97 @@ h3 {
 .plan-card h4 {
     color: var(--deep-pink);
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
-.plan-description {
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
+.plan-card p {
+    text-align: center;
 }
 
-.plan-rating {
-    margin-top: 1rem;
+.plan-card .comment-toggles {
+    justify-content: center;
+}
+
+.plan-card .btn-main,
+.plan-card .btn-back-pending,
+.plan-card .btn-delete-plan {
+    margin-top: 0.6rem;
+    width: 100%;
+    max-width: 220px;
+}
+
+/* Estrellas en planes completados */
+.plan-stars {
+    color: gold;
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.plan-stars .star-filled,
+.plan-stars .star-half {
+    -webkit-text-stroke: 1px #f06292;
+    filter: drop-shadow(0 0 2px rgba(240,98,146,0.45));
+}
+
+.plan-stars .star-empty {
+    color: #d4d4d4;
+    -webkit-text-stroke: 1px #f4a7c0;
+}
+
+/* Review comment inside plan card */
+.plan-review-comment {
+    font-style: italic;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.35);
+    border-radius: 12px;
+    padding: 8px 12px;
+    margin: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+}
+
+/* Botón volver a pendientes */
+.btn-back-pending {
+    background: rgba(255,255,255,0.7);
+    color: var(--deep-pink);
+    border: 1.5px solid var(--soft-pink);
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.82rem;
+    font-family: 'Montserrat', sans-serif;
+    transition: 0.25s ease;
+    box-shadow: 0 2px 8px rgba(240,98,146,0.12);
+}
+
+.btn-back-pending:hover {
+    background: var(--pastel-pink);
+    transform: scale(1.04);
+}
+
+/* Botón eliminar plan */
+.btn-delete-plan {
+    background: linear-gradient(135deg, #ff6b8a, #ff4f75);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.82rem;
+    font-family: 'Montserrat', sans-serif;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(255,79,117,0.25);
+}
+
+.btn-delete-plan:hover {
+    transform: scale(1.04);
+    background: linear-gradient(135deg, #ff5a7d, #ff3d67);
+    box-shadow: 0 8px 20px rgba(255,79,117,0.35);
 }
 
 /* =========================
